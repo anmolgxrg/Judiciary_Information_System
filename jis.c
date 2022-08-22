@@ -1,163 +1,223 @@
+/*
+Example of a linked list of strings
+*/
+
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> //has functions malloc() and free()
 #include <string.h>
 
-struct NODE
-{
-    int CIN;
-    char name[20];
-    char address[50];
-    char type[10];
-    char date[12];
-    char place[12];
-    char officer[20];
-    char date_arrest[12];
-    struct NODE *next;
+#define MAX 50  //maximum characters in the word
+#define QUIT "quit" //end the loop
+
+/*
+A self-referential structures contains a pointer
+that points to another structure of the same type
+and link together to form dynamic data structures.
+data: stores a word (string)
+next: is a pointer to the next node
+*/int CIN=10000;
+struct node{
+   char data[MAX];
+   char address[MAX];
+   char type[MAX];
+   char date[MAX];
+   char place[MAX];
+   char officer[MAX];
+   char datearrest[MAX];
+   int cin;
+   struct node *next;
 };
-typedef struct NODE node;
-node *head = NULL;
 
-void insertFirst(char name_, char address_, char type_, char date_, char place_, char officer_, char date_arrest_)
-{
-    node *temp = (node *)malloc(sizeof(node));
-    if (temp == NULL)
-    {
-        printf("\nMemory allocation fails");
-        return;
-    }
+//type definition for "new" data types
+typedef struct node Node;
+typedef struct node* NodePointer;
 
-    temp->name[50] = name_;
-    temp->address[50] = address_;
-    temp->type[10] = type_;
-    temp->date[12] = date_;
-    temp->place[12] = place_;
-    temp->officer[20] = officer_;
-    temp->date_arrest[12] = date_arrest_;
-    temp->next = head;
-    head = temp;
-    /* if (head==NULL)
-         head=temp;
-     else
-         {
-             temp->next=head;
-             head=temp;
-         }*/
-}
+//function prototypes
+void insertIntoLinkedList(char [],char [],char [],char [],char [],char [],char [],int, NodePointer *);
+void displayLinkedList(NodePointer);
+void deleteFromLinkedList(char [], NodePointer *);
 
-void insertLast(char name_, char address_, char type_, char date_, char place_, char officer_, char date_arrest_)
-{
-    node *temp = (node *)malloc(sizeof(node));
-    if (temp == NULL)
-    {
-        printf("\nMemory allocation fails");
-        return;
-    }
+/*
+main method - asks the user to enter a word,
+and inserts the word into a linked list in alphabetical order,
+and deletes words at the user's request.
+*/
+/*int main(){
+//stores each word
+   char word[MAX]={'\0'};
+//stores a pointer to the 1st node in the linked list
+   NodePointer head = NULL;
 
-    temp->name[20] = name_;
-    temp->address[50] = address_;
-    temp->type[10] = type_;
-    temp->date[12] = date_;
-    temp->place[12] = place_;
-    temp->officer[20] = officer_;
-    temp->date_arrest[12] = date_arrest_;
-    temp->next = head;
-    temp->next = NULL;
-    if (head == NULL)
-    {
-        head = temp;
-        return;
-    }
-    node *cur = head;
-    while (cur->next != NULL)
-    {
-        cur = cur->next;
-    }
-    cur->next = temp;
-}
+//keep inserting until user enters "quit"
+   while(0 != strcmp(word, QUIT)){
+      printf("Enter a word to INSERT into linked list (enter \"%s\" to quit): ", QUIT);
+      scanf("%s",word);
+      if(0 != strcmp(word, QUIT)){
+      //&head: send the address of the pointer to the 1st node in list
+         insertIntoLinkedList(word, &head);
+         displayLinkedList(head);
+      }
+   }//end of while
+   */
 
-/* void create()
-     { int x;
-       char ans;
-         do
-          { printf("\nEnter the NODE data:");
-            scanf("%d",&x);
-            insertFirst(x);
-            printf("\nDo you want to continue? Y/N\t");
-            scanf(" %c",&ans);// leave a space between " and %c otherwise it will not work
-          } while(ans=='Y' || ans=='y');
+//keep deleting until user enters "quit"
+   //strncpy(word, "don't quit", MAX);
+   //printf("\n");
+   //while(0 != strcmp(word, QUIT) && NULL != head){
+    //  printf("Enter a word to DELETE from linked list (enter \"%s\" to quit): ", QUIT);
+     // scanf("%s",word);
+      //if(0 != strcmp(word, QUIT)){
+       //  deleteFromLinkedList(word, &head);
+        // displayLinkedList(head);
+     // }
+   //}
 
-      }*/
+   //return 0;
+//}//end of main
 
-void display()
-{
-    if (head == NULL)
-    {
-        printf("\nEmpty List");
-        return;
-    }
+/*
+Inserts a word in alphabetical order into a linked list
+word2: is a string
+head2: is the a pointer to the 1st node in a linked list
+This parameter is a pointer to a pointer,
+because we are passing the address of the linked list to the function,
+and the linked list itself is a pointer to the 1st node in the list.
+*/
+void insertIntoLinkedList(char word2[],char word3[],char word4[],char word5[],char word6[],char word7[],char word8[],int number,NodePointer *head2){
+//pointer to a new node to be inserted into linked list
+   NodePointer newNode = NULL;
+//pointer to the previous node in the linked list
+   NodePointer previous = NULL;
+//pointer to the current node in the linked list
+   NodePointer current = *head2;
 
-    node *temp = head;
-    while (temp->next != NULL)
-    {
-        printf("%d\t", temp->name);
-        printf("%d\t", temp->address);
-        printf("%d\t", temp->type);
-        printf("%d\t", temp->date);
-        printf("%d\t", temp->place);
-        printf("%d\t", temp->officer);
-        printf("%d\t", temp->date_arrest);
+//create a node on the heap
+   newNode = malloc(sizeof(Node));
+/*
+check to see if space is available
+if no space on heap, malloc() will return NULL
+*/
+   if(NULL != newNode){
+   //copy over word to the node
+      strcpy(newNode->data, word2);
+      strcpy(newNode->address, word3);
+      strcpy(newNode->type, word4);
+      strcpy(newNode->date, word5);
+      strcpy(newNode->place, word6);
+      strcpy(newNode->officer, word7);
+      strcpy(newNode->datearrest, word8);
+      newNode->cin=number;
 
-        temp = temp->next;
-    }
-    printf("%d\t", temp->name);
-    printf("%d\t", temp->address);
-    printf("%d\t", temp->type);
-    printf("%d\t", temp->date);
-    printf("%d\t", temp->place);
-    printf("%d\t", temp->officer);
-    printf("%d\t", temp->date_arrest); // last element to be printed
-}
+   //figure out where to insert in linked list
+      while(NULL != current && strcmp(word2, current->data)>0){
+      //move previous to current
+         previous = current;
+      //move current to next node
+         current = current->next;
+      }//end of while
+      //insert at beginning of linked list
+      if(NULL == previous){
+         newNode->next = current;
+         //change the address stored in head
+         *head2 = newNode;
+      }//end of if
+      else{
+      //insert between previous and current
+         previous->next = newNode;
+         newNode->next = current;
+      }//end of else
+   }//end of if
+}//end of function
 
-void delete (int ele)
-{
-    if (head == NULL)
-    {
-        printf("\nEmpty List");
-        return;
-    }
-    node *cur, *pre;
-    cur = head;
-    pre = NULL;
-    while (cur->CIN != ele)
-    {
-        pre = cur;
-        cur = cur->next;
-    }
-    if (cur == NULL)
-        printf("\nElement Not Found");
-    else
-    {
-        if (pre == NULL) // if the data is at first node
-        {
-            head = cur->next;
-            cur->next = NULL;
-            free(cur);
-        }
-        else
-        {
-            pre->next = cur->next;
-            cur->next = NULL;
-            free(cur);
-        }
-    }
-}
+
+//displays the linked list
+void displayLinkedList(NodePointer current){
+   //for empty list
+   if(NULL == current){
+      printf("The linked list is empty!\n\n");
+      return;
+   }
+   printf("\n>>>>>> Case Details <<<<<<<<<");
+   //loop through list
+   while(NULL != current){
+   //display each node
+      printf("\n> DEFENDANT:   %s \n", current->data);
+      printf("> DEFENDANT ADDRESS:   %s \n", current->address);
+      printf("> CASE TYPE:    %s \n", current->type);
+      printf("> DATE OF CRIME:    %s \n", current->date);
+      printf("> PLACE OF CRIME:    %s \n", current->place);
+      printf("> ARRESTING OFFICER:    %s \n", current->officer);
+      printf("> DATE OF ARREST: %s \n", current->datearrest);
+      printf("> CIN : %d",current->cin);
+      //go to next node
+      current = current->next;
+   }
+   printf("\n\n");
+}//end of function
+
+
+/*
+Deletes a word from a linked list
+word3: is a string
+head3: is the a pointer to the 1st node in a linked list
+This parameter is a pointer to a pointer,
+because we are passing the address of the linked list to the function,
+and the linked list itself is a pointer to the 1st node in the list.
+*/
+void deleteFromLinkedList(char word3[], NodePointer *head3){
+//pointer to a temp node to be deleted from linked list
+   NodePointer tempNode = NULL;
+//pointer to the previous node in the linked list
+   NodePointer previous = NULL;
+//pointer to the current node in the linked list
+   NodePointer current = *head3;
+
+//check for empty list
+   if(NULL == current){
+      printf("Cannot delete from empty list!\n");
+      return;
+   }
+
+/*
+check to see if 1st node can be deleted
+*/
+   if(0 == strcmp(word3, current->data)){
+   //get address of 1st node
+      tempNode = current;
+   //change head to next node
+      *head3 = current->next;
+   //delete the node
+      printf("deleting \"%s\" . . .\n", tempNode->data);
+      free(tempNode);
+   }
+   else{
+   //loop through linked list
+      while(NULL != current && 0 != strcmp(word3, current->data)){
+         //printf("current = %s\n", current->data);
+      //move to next node in linked list
+         previous = current;
+         current = current->next;
+      }//end of while
+      if(NULL != current){
+      //get current node's address and store in tempNode
+         tempNode = current;
+         //printf("tempNode = %s\n", tempNode->data);
+      //skip over current node
+         previous->next = current->next;
+      //delete node at current pointer
+         printf("deleting \"%s\" . . .\n", tempNode->data);
+         free(tempNode);
+      }//end of if
+   }//end of else
+}//end of function
 
 int registrar();
 int lawyer();
 int judge();
 int main()
 {
-
+ char word[MAX]={'\0'};
+  NodePointer head = NULL;
     int i = 0;
     int selection;
     printf("############ WELCOME TO JUDICIARY INFORMATION SYSTEM (JIS) ############\n\n");
@@ -195,7 +255,7 @@ int main()
 
 int registrar()
 {
-
+ NodePointer head = NULL;
     printf("\n    HELLO REGISTRAR!       ");
     printf("\n    PLEASE LOGIN INTO JIS USING YOUR CREDENTIALS\n");
     // char admin[]="admin";
@@ -203,41 +263,53 @@ int registrar()
     char admin[] = "1";
     char admin_pass[] = "1";
     char admin_pass1[10];
-    printf("------> ENTER USERNAME :-    ");
+    printf("----> ENTER USERNAME :-    ");
     scanf("%s", admin1);
-    printf("\n------>  ENTER PASSWORD :-    ");
+    printf("\n----> ENTER PASSWORD :-    ");
     scanf("%s", admin_pass1);
     if (strcmp(admin, admin1) == 0 && strcmp(admin_pass, admin_pass1) == 0)
     {
         int registrar_temp = 0;
-        printf("\nLOGIN SUCCESFUL! :)\n\n> [1] Enter the case details.\n\n> [2] Assign Hearing Date.\n\n> [3] Assign New hearing date\n\n> [4] View Pending Cases\n\n\t\t");
+        int registrar_temp2=1;
+        printf("\nLOGIN SUCCESFUL! :)\n\n> [1] Enter the case details.\n\n> [2] Assign Hearing Date.\n\n> [3] Assign New hearing date\n\n> [4] View Pending Cases\n\n");
         scanf("%d", &registrar_temp);
         if (registrar_temp = 1)
-        {
-            printf("\n>>>>>>> Name Of the Defendant :");
-            char defendant_name[20];
-            scanf("%s", defendant_name);
-            printf("\n>>>>>>> Address Of the Defendant :");
-            char defendant_address[50];
-            scanf("%s", defendant_address);
-            printf("\n>>>>>>>  Type of case :");
-            char case_type[10];
-            scanf("%s", case_type);
-            printf("\n>>>>>>> Date when the crime was committed:(dd/mm/yyyy) ");
-            char date_crime[20];
-            scanf("%s", date_crime);
-            printf("\n>>>>>>> Place where the crime was committed: ");
-            char place_crime[12];
-            scanf("%s", place_crime);
-            printf("\n>>>>>>> Name of Arresting Office: ");
-            char officer_name[20];
-            scanf("%s", officer_name);
-            printf("\n>>>>>>> Date of Arrest: ");
-            char arrest_date[12];
-            scanf("%s", arrest_date);
-            insertFirst(defendant_name[20], defendant_address[50], case_type[10], date_crime[20], place_crime[12], officer_name[20], arrest_date[12]);
-            display();
+        {   while(registrar_temp2=1)
+            {
+
+
+                printf("\n>>>>>>> Name Of the Defendant :");
+                char defendant_name[20];
+                scanf("%s", defendant_name);
+                printf("\n>>>>>>> Address Of the Defendant :");
+                char defendant_address[50];
+                scanf("%s", defendant_address);
+                printf("\n>>>>>>>  Type of case :");
+                char case_type[10];
+                scanf("%s", case_type);
+                printf("\n>>>>>>> Date when the crime was committed:(dd/mm/yyyy) ");
+                char date_crime[20];
+                scanf("%s", date_crime);
+                printf("\n>>>>>>> Place where the crime was committed: ");
+                char place_crime[12];
+                scanf("%s", place_crime);
+                printf("\n>>>>>>> Name of Arresting Office: ");
+                char officer_name[20];
+                scanf("%s", officer_name);
+                printf("\n>>>>>>> Date of Arrest: ");
+                char arrest_date[12];
+                scanf("%s", arrest_date);
+                //insertFirst(defendant_name[20], defendant_address[50], case_type[10], date_crime[20], place_crime[12], officer_name[20], arrest_date[12]);
+                insertIntoLinkedList(defendant_name,defendant_address, case_type, date_crime, place_crime, officer_name, arrest_date,CIN, &head);
+
+                printf("The Case Identification Number is :  %d\n\n",CIN);
+                CIN++;
+                displayLinkedList(head);
+                printf("DO YOU WANT TO ADD ANOTHER CASE ?? \n>>> [1] YES\n>>> [0] NO");
+                scanf("%s",&registrar_temp2);
+            }
         }
+
     }
     else
     {
@@ -271,7 +343,7 @@ int lawyer()
         if (h==16)
         {
             printf("\nThank you! Your card details have been validated successfully\n");
-            display();
+
         }
         else
         {
@@ -304,7 +376,7 @@ int judge()
         printf("\nLOGIN SUCCESFUL! :)\n\t\t");
 
         printf("\n>>>>>>>Old Cases<<<<<<<<\n");
-        display();
+
     }
     else
     {
